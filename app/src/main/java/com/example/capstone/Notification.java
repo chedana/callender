@@ -14,6 +14,7 @@ public class Notification extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
+
         TextView textView = findViewById(R.id.text_view);
 
         String message = getIntent().getStringExtra("massage");

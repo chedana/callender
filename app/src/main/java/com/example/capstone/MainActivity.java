@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mediaPlayer;
 
     final int REQUEST_PERMISSION_CODE = 1000;
+    private static MainActivity instance;
 
     Button btNotification;
 //    private final String CHANNEL_ID = "notification";
@@ -72,40 +73,48 @@ public class MainActivity extends AppCompatActivity {
 
         btNotification.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                String message = "This is a notification example.";
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                    NotificationChannel channel =
-                            new NotificationChannel("MyNotifications","MyNotifications",NotificationManager.IMPORTANCE_DEFAULT);
-                    NotificationManager manager = getSystemService(NotificationManager.class);
-                    manager.createNotificationChannel(channel);
-                }
-
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "MyNotifications");
-                builder.setSmallIcon(R.drawable.ic_message);
-                builder.setContentTitle("Simple Notification");
-                builder.setContentText(message);
-                builder.setAutoCancel(true);
-                builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-
+            public void onClick(View view) {
+                displayNotification();
+//                String message = "This is a notification example.";
 //
-
-
-                Intent intent = new Intent(MainActivity.this,
-                        Notification.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("message",message);
-
-                PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,
-                        0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                builder.setContentIntent(pendingIntent);
-
-
-                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
-                managerCompat.notify(999,builder.build());
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//                    NotificationChannel channel =
+//                            new NotificationChannel("MyNotifications","MyNotifications",NotificationManager.IMPORTANCE_DEFAULT);
+//                    NotificationManager manager = getSystemService(NotificationManager.class);
+//                    manager.createNotificationChannel(channel);
+//                }
+//
+//
+//                NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "MyNotifications");
+//                builder.setSmallIcon(R.drawable.ic_message);
+//                builder.setContentTitle("Simple Notification");
+//                builder.setContentText(message);
+//                builder.setAutoCancel(true);
+//                builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+//
+//
+////
+//
+//
+//                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+////                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+////                intent.putExtra("message",message);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 999, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+//
+////                PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,
+////                        999,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                builder.setContentIntent(pendingIntent);
+//
+//
+//                NotificationManager notificationManager = (NotificationManager) getSystemService(
+//                        Context.NOTIFICATION_SERVICE
+//                );
+//                notificationManager.notify(999,builder.build());
+//
+////
+////                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
+////                managerCompat.notify(999,builder.build());
             }
         });
 
@@ -218,17 +227,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    public  void displayNotification(View view){
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-//        builder.setSmallIcon(R.drawable.ic_sms_notification);
-//        builder.setContentTitle("Simple Notification");
-//        builder.setContentText("Call ended");
-//        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-//
-//
-//        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-//        notificationManagerCompat.notify(NOTIFICATION_ID,builder.build());
-//    }
+    public  void displayNotification(){
+        String message = "This is a notification example.";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel =
+                    new NotificationChannel("MyNotifications","MyNotifications",NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "MyNotifications");
+        builder.setSmallIcon(R.drawable.ic_message);
+        builder.setContentTitle("Simple Notification");
+        builder.setContentText(message);
+        builder.setAutoCancel(true);
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 999, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
+        notificationManager.notify(999,builder.build());
+        Toast.makeText(MainActivity.this, "Notification..." + pathSave.toString(),Toast.LENGTH_SHORT).show();
+
+    }
     private void setupMediaRecorder(){
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -276,6 +305,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
     public void AddCalendarEvent(View view) {
 
         Intent calIntent = new Intent(Intent.ACTION_INSERT);

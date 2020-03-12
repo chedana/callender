@@ -11,17 +11,24 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Import appointment"
         android:onClick="AddCalendarEvent"
-    
+        android:text="Import appointment"
 
-        tools:layout_editor_absoluteX="162dp"
-        tools:layout_editor_absoluteY="415dp" />
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.679"
+        tools:layout_editor_absoluteX="-16dp" />
+
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Record Area"
         android:textSize="30sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="30dp" />
 
     <Button
         android:id="@+id/btnStartRecord"
