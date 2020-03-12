@@ -3,31 +3,29 @@ package com.example.myapplication;
 //
 //package android.support.design.widget;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.UUID;
 
-import android.os.Environment;
 import android.provider.CalendarContract;
 import android.view.View;
 
-import android.net.Uri;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.pm.PackageManager;
-import android.util.Log;
 //import android.support.design.widget.Snackbar;
 //import android.support.v4.app.ActivityCompat;
 //import android.support.v4.content.ContextCompat;
@@ -35,6 +33,10 @@ import android.util.Log;
 import android.Manifest;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.capstone.Notification;
+
+import javax.net.ssl.ManagerFactoryParameters;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -49,17 +51,63 @@ public class MainActivity extends AppCompatActivity {
 
     final int REQUEST_PERMISSION_CODE = 1000;
 
+    Button btNotification;
+//    private final String CHANNEL_ID = "notification";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //notification
 
+
+        //record function
         btnRecord = (Button) findViewById(R.id.btnStartRecord);
         btnStopRecord = (Button) findViewById(R.id.btnStopRecord);
         btnPlay = (Button) findViewById(R.id.btnPlay);
         btnStop = (Button) findViewById(R.id.btnStop);
+        btNotification = (Button) findViewById(R.id.bt_notification);
+
+        btNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = "This is a notification example.";
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                    NotificationChannel channel =
+                            new NotificationChannel("MyNotifications","MyNotifications",NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager manager = getSystemService(NotificationManager.class);
+                    manager.createNotificationChannel(channel);
+                }
+
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "MyNotifications");
+                builder.setSmallIcon(R.drawable.ic_message);
+                builder.setContentTitle("Simple Notification");
+                builder.setContentText(message);
+                builder.setAutoCancel(true);
+                builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+
+//
+
+
+                Intent intent = new Intent(MainActivity.this,
+                        Notification.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("message",message);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,
+                        0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                builder.setContentIntent(pendingIntent);
+
+
+                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
+                managerCompat.notify(999,builder.build());
+            }
+        });
 
 
 
@@ -169,6 +217,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+//    public  void displayNotification(View view){
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+//        builder.setSmallIcon(R.drawable.ic_sms_notification);
+//        builder.setContentTitle("Simple Notification");
+//        builder.setContentText("Call ended");
+//        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+//
+//
+//        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+//        notificationManagerCompat.notify(NOTIFICATION_ID,builder.build());
+//    }
     private void setupMediaRecorder(){
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);

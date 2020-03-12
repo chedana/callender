@@ -1,13 +1,18 @@
 package com.example.myapplication;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 import android.content.Context;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
@@ -64,9 +69,10 @@ public class InterceptCall extends BroadcastReceiver {
         Toast.makeText(context,"Setting up...", Toast.LENGTH_SHORT).show();
 
         mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         mediaRecorder.setOutputFile(pathSave);
     }
+
 }
